@@ -31,6 +31,7 @@ namespace Rest;
 include_once __DIR__ . '/mimetypes.php';
 
 use Rest\MimeType as MimeType;
+use Rest\Method as Method;
 
 class Response {
 	
@@ -79,23 +80,31 @@ class Response {
 		$this->gotError = true;
 	}
 
+	public function acceptMethod($method) {
+		self::acceptMethods([$method]);
+	}
+
 	public function acceptMethods($methods = []) {
 			
-			$validMethods = ['get', 'post', 'put', 'options', 'head', 'delete', 'patch'];
+		$validMethods = Method::allMethods();
 
-			$outputMethods = [];
+		$outputMethods = [];
 
-			if (is_array($methods)) {
-				foreach ($methods as $method) {
-					if (in_array(strtolower($method), $validMethods)) {
-						$outputMethods[] = $method;
-					}
-				}	
-			}
+		if (is_array($methods)) {
 
-			if (count($outputMethods) > 0) {
-				$this->headers[] = 'Accept: ' . implode(',', $outputMethods);
-			}
+			foreach ($methods as $method) {
+				
+				$method = strtoupper($method);
+
+				if (in_array($method, $validMethods)) {
+					$outputMethods[] = $method;
+				}
+			}	
+		}
+
+		if (count($outputMethods) > 0) {
+			$this->headers[] = 'Accept: ' . implode(',', $outputMethods);
+		}
 
 	}
 

@@ -13,11 +13,14 @@ use Rest\Errors\MethodNotAllowed as MethodNotAllowed;
 
 use Rest\Request as Request;
 use Rest\Response as Response;
+use Rest\Method as Method;
 
 use Login\Errors;
 use Languages\Language as Language;
 
 $response = new Response();
+
+$response->acceptMethod(Method::POST);
 
 $params = Request::params();
 
