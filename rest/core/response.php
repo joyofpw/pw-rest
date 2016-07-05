@@ -79,6 +79,26 @@ class Response {
 		$this->gotError = true;
 	}
 
+	public function acceptMethods($methods = []) {
+			
+			$validMethods = ['get', 'post', 'put', 'options', 'head', 'delete', 'patch'];
+
+			$outputMethods = [];
+
+			if (is_array($methods)) {
+				foreach ($methods as $method) {
+					if (in_array(strtolower($method), $validMethods)) {
+						$outputMethods[] = $method;
+					}
+				}	
+			}
+
+			if (count($outputMethods) > 0) {
+				$this->headers[] = 'Accept: ' . implode(',', $outputMethods);
+			}
+
+	}
+
 	public function render() {
 
 		header_remove();
