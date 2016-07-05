@@ -36,7 +36,7 @@ include_once __DIR__ . '/statuscodes.php';
 use Rest\MimeType as MimeType;
 use Rest\StatusCode as Status;
 
-interface JsonErrorInterface {
+interface JSONErrorInterface {
 	public static function error();
 }
 
@@ -96,7 +96,7 @@ class JSONError {
 
 }
 
-class BadRequest implements JsonErrorInterface {
+class BadRequest implements JSONErrorInterface {
 
 	public static function error() {
 		
@@ -112,7 +112,7 @@ class BadRequest implements JsonErrorInterface {
 
 }
 
-class MethodNotAllowed implements JsonErrorInterface {
+class MethodNotAllowed implements JSONErrorInterface {
 
 	public static function error() {
 		
@@ -127,7 +127,7 @@ class MethodNotAllowed implements JsonErrorInterface {
 	}
 }
 
-class NotFound implements JsonErrorInterface {
+class NotFound implements JSONErrorInterface {
 
 	public static function error() {
 		
@@ -142,7 +142,7 @@ class NotFound implements JsonErrorInterface {
 	}
 }
 
-class Unauthorized implements JsonErrorInterface {
+class Unauthorized implements JSONErrorInterface {
 
 	public static function error() {
 		
@@ -157,7 +157,7 @@ class Unauthorized implements JsonErrorInterface {
 	}
 }
 
-class Forbidden implements JsonErrorInterface {
+class Forbidden implements JSONErrorInterface {
 
 	public static function error() {
 		
@@ -172,7 +172,7 @@ class Forbidden implements JsonErrorInterface {
 	}
 }
 
-class Conflict implements JsonErrorInterface {
+class Conflict implements JSONErrorInterface {
 
 	public static function error() {
 		
@@ -187,7 +187,7 @@ class Conflict implements JsonErrorInterface {
 	}
 }
 
-class NotImplemented implements JsonErrorInterface {
+class NotImplemented implements JSONErrorInterface {
 
 	public static function error() {
 		
@@ -203,7 +203,7 @@ class NotImplemented implements JsonErrorInterface {
 }
 
 
-class InternalServerError implements JsonErrorInterface {
+class InternalServerError implements JSONErrorInterface {
 
 	public static function error() {
 		
