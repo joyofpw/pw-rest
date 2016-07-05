@@ -80,11 +80,11 @@ class Response {
 		$this->gotError = true;
 	}
 
-	public function acceptMethod($method) {
-		self::acceptMethods([$method]);
+	public function allowMethod($method) {
+		self::allowMethods([$method]);
 	}
 
-	public function acceptMethods($methods = []) {
+	public function allowMethods($methods = []) {
 			
 		$validMethods = Method::allMethods();
 
@@ -103,7 +103,7 @@ class Response {
 		}
 
 		if (count($outputMethods) > 0) {
-			$this->headers[] = 'Accept: ' . implode(',', $outputMethods);
+			$this->headers[] = 'Allow: ' . implode(',', $outputMethods);
 		}
 
 	}

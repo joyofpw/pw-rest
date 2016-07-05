@@ -20,7 +20,7 @@ use Languages\Language as Language;
 
 $response = new Response();
 
-$response->acceptMethod(Method::POST);
+$response->allowMethod(Method::POST);
 
 $params = Request::params();
 
