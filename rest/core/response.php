@@ -29,9 +29,10 @@ namespace Rest;
 */
 
 include_once __DIR__ . '/mimetypes.php';
+include_once __DIR__ . '/headers.php';
 
 use Rest\MimeType as MimeType;
-use Rest\Method as Method;
+use Rest\Header as Header;
 
 class Response {
 	
@@ -47,6 +48,10 @@ class Response {
 
 	private $gotError;
 
+	private $allowMethodsHeader;
+
+	private $clearHeaders;
+
 	public function __construct($_output = [], $_mimeType = '', $_responseCode = 200, $_headers = []) {
 
 		$this->output = $_output;
@@ -61,56 +66,51 @@ class Response {
 		
 		$this->headers = $_headers;
 
-		$this->headers[] = $_mimeType;
+		$this->headers[] = Header::contentType($_mimeType);
 
 		$this->gotError = false;
 		$this->error = null;
 
+		$this->clearHeaders = true;
+
 	}
 
-	public function addArray($data) {
-
-		$this->output = array_merge($this->output, $data);
+	// Calls header_remove() on render if true
+	public function clearHeaders($_clearHeaders = true) {
+		$this->clearHeaders = $_clearHeaders;
 	}
 
-	public function setError($error) {
+	public function addArray($_data) {
 
-		$this->error = $error;
+		$this->output = array_merge($this->output, $_data);
+	}
+
+	public function setError($_error) {
+
+		$this->error = $_error;
 
 		$this->gotError = true;
 	}
 
-	public function allowMethod($method) {
-		self::allowMethods([$method]);
+	public function allowMethod($_method) {
+
+		if (is_string($_method)) {
+			self::allowMethods([$_method]);
+		}
 	}
 
-	public function allowMethods($methods = []) {
-			
-		$validMethods = Method::allMethods();
-
-		$outputMethods = [];
-
-		if (is_array($methods)) {
-
-			foreach ($methods as $method) {
-				
-				$method = strtoupper($method);
-
-				if (in_array($method, $validMethods)) {
-					$outputMethods[] = $method;
-				}
-			}	
+	public function allowMethods($_methods = []) {
+		
+		if (is_array($_methods)) {
+			$this->allowMethodsHeader = Header::allow($_methods);
 		}
-
-		if (count($outputMethods) > 0) {
-			$this->headers[] = 'Allow: ' . implode(',', $outputMethods);
-		}
-
 	}
 
 	public function render() {
 
-		header_remove();
+		if ($this->clearHeaders) {
+			Header::removeAllHeaders();
+		}
 
 		if ($this->gotError) {
 			
@@ -122,11 +122,15 @@ class Response {
 
 			$this->headers = [];
 
-			$this->headers[] = $this->error->mimeType;
+			$this->headers[] = Header::contentType($this->error->mimeType);
 		} 
 
+		if ($this->allowMethodsHeader) {
+			$this->headers[] = $this->allowMethodsHeader;
+		}
+
 		foreach($this->headers as $header) {
-			header($header);
+			Header::set($header);
 		}
 		
 

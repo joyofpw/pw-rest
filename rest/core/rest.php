@@ -33,9 +33,13 @@ include_once __DIR__ . '/mimetypes.php';
 include_once __DIR__ . '/request.php';
 include_once __DIR__ . '/response.php';
 include_once __DIR__ . '/statuscodes.php';
+include_once __DIR__ . '/methods.php';
+include_once __DIR__ . '/headers.php';
 
 use Rest\Errors;
 use Rest\MimeType;
 use Rest\StatusCode;
 use Rest\Request;
 use Rest\Response;
+use Rest\Method;
+use Rest\Header;

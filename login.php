@@ -14,6 +14,7 @@ use Rest\Errors\MethodNotAllowed as MethodNotAllowed;
 use Rest\Request as Request;
 use Rest\Response as Response;
 use Rest\Method as Method;
+use Rest\Header as Header;
 
 use Login\Errors;
 use Languages\Language as Language;
@@ -54,6 +55,10 @@ if (!Request::isPost()) {
 }
 
 $response->addArray(Language::current());
+
+$headerParam = Header::get('origin');
+$response->addArray(['_request_headers' => Header::getAll()]);
+$response->addArray(['headerParam' => $headerParam]);
 
 /*
 Should render

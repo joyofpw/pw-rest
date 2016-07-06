@@ -100,19 +100,11 @@ class MimeType {
        );
 
    	/**
-   	* Custom content mime type string
-   	*/
-   	public static function contentType($_mime) {
-		$mime = "Content-Type: $_mime";
-   		return $mime;
-   	}
-
-   	/**
    	* Returns a mime type by name
    	*/
     public static function mimeType($_mime) {
    		$mime = MimeType::$mimeTypes[$_mime];
-   		return MimeType::contentType($mime);
+      return $mime;
    	}
 
    	/**
