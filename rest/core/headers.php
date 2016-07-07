@@ -56,17 +56,17 @@ class Header {
    	}
 
    	// Date should be a unix timestamp
-   	public static function date($date) {
+   	public static function date($timestamp) {
    		
-   		$date = Headers::gmtDate($date);
+   		$date = Header::gmtDate($timestamp);
 
    		return "Date: $date";
    	}
 
    	// Date should be a unix timestamp
-   	public static function lastModified($date) {
+   	public static function lastModified($timestamp) {
    		
-   		$date = Headers::gmtDate($date);
+   		$date = Header::gmtDate($timestamp);
 
    		return "Last-Modified: $date";
    	}
@@ -103,8 +103,20 @@ class Header {
    	}
 
    	public static function set($header) {
-   		header($header);
+         
+         if (is_string($header)) {
+            header($header);
+         }
    	}
+
+      public static function set($name, $value) {
+
+         if (is_string($name) && is_string($value)) {
+
+            header("$name: $value");
+         }
+
+      }
 
 
    	public static function getAll() {
@@ -152,5 +164,44 @@ class Header {
          }
 
          return $result;
+      }
+
+      // Basic HTTP AUTH
+      public static function getBasicAuth() {
+
+         $username = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null);
+         $password = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null);
+
+         if (!$username || !$password) {
+
+            $auth = (isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : null);
+
+            if ($auth) {
+
+               $itsBasicAuth = (strpos(strtolower($auth), 'basic') === 0);
+
+               if ($itsBasicAuth) {
+                  list($username, $password) = explode(':', base64_decode(substr($auth, strlen('basic:'))));
+               }
+            }
+         }
+
+         return ['username' => $username, 
+                 'password' => $password];
+
+      }
+
+      public static function username() {
+
+         $auth = Header::getBasicAuth();
+
+         return $auth['username'];
+      }
+
+      public static function password() {
+
+         $auth = Header::getBasicAuth();
+
+         return $auth['password'];
       }
 }

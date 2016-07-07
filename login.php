@@ -34,6 +34,13 @@ if (!Request::isPost()) {
 	$username = $params['username'];
 	$password = $params['password'];
 
+	if (!$username || !$password) {
+
+		// Basic Auth
+		$username = Header::username();
+		$password = Header::password();
+	}
+
 	if ((!isset($username) || $username == '') ||
 		(!isset($password) || $password == '')) {
 
