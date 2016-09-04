@@ -35,6 +35,7 @@ include_once __DIR__ . '/statuscodes.php';
 
 use Rest\MimeType as MimeType;
 use Rest\StatusCode as Status;
+use function \Processwire\_x as _x;
 
 interface JSONErrorInterface {
 	public static function error();
