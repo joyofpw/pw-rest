@@ -109,7 +109,7 @@ class Header {
          }
    	}
 
-      public static function set($name, $value) {
+      public static function setNameAndValue($name, $value) {
 
          if (is_string($name) && is_string($value)) {
 
