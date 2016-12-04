@@ -33,12 +33,21 @@ namespace Rest\Errors;
 include_once __DIR__ . '/mimetypes.php';
 include_once __DIR__ . '/statuscodes.php';
 
-use Rest\MimeType as MimeType;
-use Rest\StatusCode as Status;
+use \Rest\MimeType as MimeType;
+use \Rest\StatusCode as Status;
+
 use function \Processwire\_x as _x;
+use function \Processwire\__ as __;
+
+
 
 interface JSONErrorInterface {
 	public static function error();
+}
+
+class JSONException extends \Exception {
+	public $error;
+	public $response;
 }
 
 class JSONError {
@@ -93,6 +102,16 @@ class JSONError {
 		$output['error']['info'] = $this->info;
 
 		return $output;
+	}
+
+	public function exception($_response = null) {
+		
+		$exception = new JSONException($this->message, $this->number);
+		
+		$exception->error = $this;
+		$exception->response = $_response;
+
+		return $exception;
 	}
 
 }
@@ -215,6 +234,31 @@ class InternalServerError implements JSONErrorInterface {
 
 		$error = new JSONError($code, $message, 'kInternalServerError', $info, $number);
 
+		return $error;
+	}
+}
+
+// Special Errors
+class RequestContentTypeMisMatchError extends BadRequest {
+	public static function error() {
+		
+		$error = parent::error();
+		$error->message = __('The Content Type Given in the Request is Not Valid.');
+		$error->info = __('The content type must be changed.');
+		$error->uuid = 'kRequestContentTypeMisMatchError';
+		$error->number = 1000;
+		return $error;
+	}
+}
+
+class InvalidCredentials extends Unauthorized {
+	public static function error() {
+		
+		$error = parent::error();
+		$error->message = __('The credentials you gave were not valid');
+		$error->info = __('User or password were incorrect or wrong format of params.');
+		$error->uuid = 'kLoginInvalidCredentials';
+		$error->number = 1001;
 		return $error;
 	}
 }
