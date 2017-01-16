@@ -11,5 +11,8 @@ An example `login.php` and `404.php` template files
 were made for demostration.
 
 
+For a more complete example see
+https://github.com/NinjasCL/voxgram
+
 Made with <i class="fa fa-heart">&#9829;</i> by <a href="http://ninjas.cl" target="_blank">Ninjas</a>.
 
