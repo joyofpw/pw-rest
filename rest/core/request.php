@@ -32,7 +32,8 @@ namespace Rest;
 * Copyright (c) 2014 Artur Heinze
 */
 
-class Request {
+class Request 
+{
 
   public static $types = array (
   'get', 
@@ -52,54 +53,68 @@ class Request {
    * @param  String $type
    * @return Boolean
    */
-   public static function is($type) {
+   public static function is($type) 
+   {
 
-       switch(strtolower($type)) {
+       $method = (isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '');
+       $method = strtolower($method);
+
+       switch(strtolower($type)) 
+       {
 
            case 'ajax':
            return (
-               (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'))       ||
-               (isset($_SERVER["CONTENT_TYPE"]) && stripos($_SERVER["CONTENT_TYPE"],'application/json')!==false)           ||
-               (isset($_SERVER["HTTP_CONTENT_TYPE"]) && stripos($_SERVER["HTTP_CONTENT_TYPE"],'application/json')!==false)
-           );
+               (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) ||
+
+               (isset($_SERVER["CONTENT_TYPE"]) && 
+                stripos($_SERVER["CONTENT_TYPE"],'application/json')!==false) ||
+
+               (isset($_SERVER["HTTP_CONTENT_TYPE"]) && 
+               stripos($_SERVER["HTTP_CONTENT_TYPE"], 'application/json') !== false)
+                );
            break;
            
            case 'mobile':
            $mobileDevices = array(
-               "midp","240x320","blackberry","netfront","nokia","panasonic","portalmmm","sharp","sie-","sonyericsson",
-               "symbian","windows ce","benq","mda","mot-","opera mini","philips","pocket pc","sagem","samsung",
-               "sda","sgh-","vodafone","xda","iphone", "ipod","android"
+               "midp","240x320","blackberry","netfront","nokia","panasonic",
+               "portalmmm","sharp","sie-","sonyericsson",
+               "symbian","windows ce","benq","mda","mot-","opera mini",
+               "philips","pocket pc","sagem","samsung",
+               "sda","sgh-","vodafone","xda","iphone", "ipod", "ipad", "android"
            );
            
-           return preg_match('/(' . implode('|', $mobileDevices). ')/i',strtolower($_SERVER['HTTP_USER_AGENT']));
+           return preg_match('/(' . implode('|', $mobileDevices). ')/i', 
+                            strtolower($_SERVER['HTTP_USER_AGENT'])
+                            );
            break;
            
            case 'post':
-           return (strtolower($_SERVER['REQUEST_METHOD']) == 'post');
+           return ($method == 'post');
            break;
            
            case 'get':
-           return (strtolower($_SERVER['REQUEST_METHOD']) == 'get');
+           return ($method == 'get');
            break;
            
            case 'put':
-           return (strtolower($_SERVER['REQUEST_METHOD']) == 'put');
+           return ($method == 'put');
            break;
 
            case 'options':
-           return (strtolower($_SERVER['REQUEST_METHOD']) == 'options');
+           return ($method == 'options');
            break;
 
            case 'patch':
-           return (strtolower($_SERVER['REQUEST_METHOD']) == 'patch');
+           return ($method == 'patch');
            break;
            
            case 'delete':
-           return (strtolower($_SERVER['REQUEST_METHOD']) == 'delete');
+           return ($method == 'delete');
            break;
 
            case 'head':
-           return (strtolower($_SERVER['REQUEST_METHOD']) == 'head');
+           return ($method == 'head');
            break;
            
            case 'ssl':
@@ -110,57 +125,70 @@ class Request {
        return false;
    }
 
-  public static function isAjax() {
-    return Request::is('ajax');
+  public static function isAjax()
+  {
+    return self::is('ajax');
   }
 
-  public static function isMobile() {
-    return Request::is('mobile');
+  public static function isMobile() 
+  {
+    return self::is('mobile');
   }
 
-  public static function isPost() {
-    return Request::is('post');
+  public static function isPost() 
+  {
+    return self::is('post');
   }
 
-  public static function isGet() {
-    return Request::is('get');
+  public static function isGet() 
+  {
+    return self::is('get');
   }
 
-  public static function isPut() {
-    return Request::is('put');
+  public static function isPut() 
+  {
+    return self::is('put');
   }
 
-  public static function isPatch() {
-    return Request::is('patch');
+  public static function isPatch() 
+  {
+    return self::is('patch');
   }
 
-  public static function isDelete() {
-    return Request::is('delete');
+  public static function isDelete() 
+  {
+    return self::is('delete');
   }
 
-  public static function isHead() {
-    return Request::is('head');
+  public static function isHead() 
+  {
+    return self::is('head');
   }
 
-  public static function isOptions() {
-    return Request::is('options');
+  public static function isOptions() 
+  {
+    return self::is('options');
   }
 
-  public static function isSSL() {
-    return Request::is('ssl');
+  public static function isSSL() 
+  {
+    return self::is('ssl');
   }
 
   /**
   * Get current request method
   * @return String
   */
-  public static function currentMethod() {
+  public static function currentMethod() 
+  {
     
     $currentType = null;
 
-    foreach(Request::$types as $type) {
+    foreach(self::$types as $type) 
+    {
     
-      if(Request::is($type)){
+      if(self::is($type))
+      {
         $currentType = strtoupper($type);
         break;
       }
@@ -170,19 +198,24 @@ class Request {
     return $currentType;
   }
 
-  public static function contentType() {
+  public static function contentType() 
+  {
     
     $contentType = '';
 
     if (array_key_exists('CONTENT_TYPE', $_SERVER) && 
-      isset($_SERVER["CONTENT_TYPE"])) {
+      isset($_SERVER["CONTENT_TYPE"])) 
+      {
     
         $contentType = $_SERVER["CONTENT_TYPE"];
     
-    } else {
+    } 
+    else 
+    {
         
         if (array_key_exists('HTTP_CONTENT_TYPE', $_SERVER) && 
-          isset($_SERVER["HTTP_CONTENT_TYPE"])) {
+          isset($_SERVER["HTTP_CONTENT_TYPE"])) 
+        {
             $contentType = $_SERVER['HTTP_CONTENT_TYPE'];
         }
     }
@@ -197,66 +230,32 @@ class Request {
   * @param  Array $source
   * @return Misc
   */
-  public static function params($index=null, $default = null, $source = null) {
+  public static function params($index=null, $default = null, $source = null) 
+  {
 
-        // check for php://input and merge with $_REQUEST
-    
-        if ((isset($_SERVER["CONTENT_TYPE"]) && 
-  		  stripos($_SERVER["CONTENT_TYPE"],'application/json') !== false) ||
-            (isset($_SERVER["HTTP_CONTENT_TYPE"]) && 
-  		  stripos($_SERVER["HTTP_CONTENT_TYPE"],'application/json') !== false) // PHP build in Webserver !?
-  	  	  ) {
-              if ($json = json_decode(@file_get_contents('php://input'), true)) {
-                  $_REQUEST = array_merge($_REQUEST, $json);
-              }
+    // check for php://input and merge with $_REQUEST
+
+    $contentType = self::contentType();
+
+    if(stripos($contentType, 'application/json') !== false)
+    {
+          if ($json = json_decode(@file_get_contents('php://input'), true)) 
+          {
+              $_REQUEST = array_merge($_REQUEST, $json);
           }
-
-        $src = $source ? $source : $_REQUEST;
-
-        return Request::fetch_from_array($src, $index, $default);
     }
 
+    $src = $source ? $source : $_REQUEST;
 
-  private static function fetch_from_array(&$array, $index=null, $default = null) {
+    return self::fetch_from_array($src, $index, $default);
+  }
 
-      if (is_null($index)) {
-
-          return $array;
-
-      } elseif (isset($array[$index])) {
-
-          return $array[$index];
-
-      } elseif (strpos($index, '/')) {
-
-          $keys = explode('/', $index);
-        
-          switch(count($keys)) {
-
-              case 1:
-                  if (isset($array[$keys[0]])){
-                      return $array[$keys[0]];
-                  }
-                  break;
-              case 2:
-                  if (isset($array[$keys[0]][$keys[1]])){
-                      return $array[$keys[0]][$keys[1]];
-                  }
-                  break;
-              case 3:
-                  if (isset($array[$keys[0]][$keys[1]][$keys[2]])){
-                      return $array[$keys[0]][$keys[1]][$keys[2]];
-                  }
-                  break;
-              case 4:
-                  if (isset($array[$keys[0]][$keys[1]][$keys[2]][$keys[3]])){
-                      return $array[$keys[0]][$keys[1]][$keys[2]][$keys[3]];
-                  }
-                  break;
-          }
-      }
-
-      return $default;
+  /**
+  * Same as params. Just sintax sugar.
+  */
+  public static function inputs($index=null, $default = null, $source = null)
+  {
+    return self::params($index=null, $default = null, $source = null);
   }
 
   /**
@@ -267,18 +266,81 @@ class Request {
   * Example
   * Request::getParam('username');
   */
-  public static function getParam($_name, $_defaultValue = null, $_params = null) {
+  public static function getParam($_name, $_defaultValue = null, $_params = null) 
+  {
 
     $params = $_params;
     
-    if (!is_array($_params) || $_params == null ) {
-          $params = Request::params();
+    if (!is_array($_params) || $_params == null ) 
+    {
+          $params = self::params();
     }
 
-    if (!is_string($_name)) {
+    if (!is_string($_name)) 
+    {
       $_name = "";
     }
 
     return (array_key_exists($_name, $params) ? $params[$_name] : $_defaultValue);
+  }
+
+  /**
+  * Same as getParam. Just sintax sugar.
+  */
+  public static function input($_name, $_defaultValue = null, $_params = null)
+  {
+    return self::getParam($_name, $_defaultValue = null, $_params = null);
+  }
+
+  private static function fetch_from_array(&$array, $index=null, $default = null) {
+
+      if (is_null($index)) 
+      {
+
+          return $array;
+
+      } 
+      elseif (isset($array[$index])) 
+      {
+
+          return $array[$index];
+
+      } 
+      elseif (strpos($index, '/')) 
+      {
+
+          $keys = explode('/', $index);
+        
+          switch(count($keys)) 
+          {
+
+              case 1:
+                  if (isset($array[$keys[0]]))
+                  {
+                      return $array[$keys[0]];
+                  }
+                  break;
+              case 2:
+                  if (isset($array[$keys[0]][$keys[1]]))
+                  {
+                      return $array[$keys[0]][$keys[1]];
+                  }
+                  break;
+              case 3:
+                  if (isset($array[$keys[0]][$keys[1]][$keys[2]]))
+                  {
+                      return $array[$keys[0]][$keys[1]][$keys[2]];
+                  }
+                  break;
+              case 4:
+                  if (isset($array[$keys[0]][$keys[1]][$keys[2]][$keys[3]]))
+                  {
+                      return $array[$keys[0]][$keys[1]][$keys[2]][$keys[3]];
+                  }
+                  break;
+          }
+      }
+
+      return $default;
   }
 }
